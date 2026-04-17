@@ -17,7 +17,7 @@ public class ProductServiceImpl implements ProductService {
     KafkaTemplate<String, ProductCreatedEvent> kafkaTemplate;
 
     @Override
-    public String createProduct(CreateProductModel createProductModel) {
+    public String createProduct(CreateProductModel createProductModel) throws Exception {
         String productId = java.util.UUID.randomUUID().toString();
         ProductCreatedEvent productCreatedEvent = new ProductCreatedEvent(
                 productId,
@@ -36,12 +36,23 @@ public class ProductServiceImpl implements ProductService {
             } else {
                 // Optionally handle the successful send result
                 log.info("Product created event sent successfully for product ID: " + productId);
+                log.info("topic: " + result.getRecordMetadata().topic());
+                log.info("partition: " + result.getRecordMetadata().partition() + " offset: " + result.getRecordMetadata().offset());
             }
         });
 
+        /**
+         * synchronous way
+         */
+        SendResult<String, ProductCreatedEvent> synchronousWayOfSending = kafkaTemplate.
+                send("product-created-event", productId, productCreatedEvent).get();
         //use future.join() - to blok the thread and wait till above topic gets published
         // then this will be synchronous and will return the productId after topic gets published
 
+        //since this is asynchronous, we can return the productId immediately without waiting for the topic to be published
+        //so this log (returning product id ) message gets printed first before the topic gets published, and then after topic gets published,
+        // then the log message inside whenComplete() gets printed
+        log.info("**** returning product id ");
         return productId;
     }
 }
