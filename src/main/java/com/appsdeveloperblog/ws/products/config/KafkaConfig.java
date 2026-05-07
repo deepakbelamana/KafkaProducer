@@ -53,6 +53,7 @@ public class KafkaConfig {
         config.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, deliveryTimeout);
         config.put(ProducerConfig.LINGER_MS_CONFIG, linger);
         config.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, requestTimeout);
+        //config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true); // Enable idempotence for exactly-once delivery
 
         return config;
     }
