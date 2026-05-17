@@ -1,6 +1,8 @@
 package com.appsdeveloperblog.ws.products.service;
 
 import com.appsdeveloperblog.ws.products.model.CreateProductModel;
+
+import com.dpkproject.kafka.utilities.event.ProductCreatedEvent;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -19,12 +21,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public String createProduct(CreateProductModel createProductModel) throws Exception {
         String productId = java.util.UUID.randomUUID().toString();
-        ProductCreatedEvent productCreatedEvent = new ProductCreatedEvent(
-                productId,
-                createProductModel.getTitle(),
-                createProductModel.getPrice(),
-                createProductModel.getQuantity());
-
+        ProductCreatedEvent productCreatedEvent = new ProductCreatedEvent();
+        productCreatedEvent.setProductId(productId);
+        productCreatedEvent.setPrice(createProductModel.getPrice());
+        productCreatedEvent.setQuantity(createProductModel.getQuantity());
+        productCreatedEvent.setTitle(createProductModel.getTitle());
         // Publish the event to Kafka Asynchronously
         CompletableFuture<SendResult<String, ProductCreatedEvent>> future = kafkaTemplate.
                 send("product-created-event", productId, productCreatedEvent);

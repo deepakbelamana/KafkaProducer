@@ -24,7 +24,17 @@
     </properties>
 
     <dependencies>
-
+        <dependency>
+            <groupId>com.dpkproject.kafka.utilities</groupId>
+            <artifactId>a-shared-utilities-for-kafka-projects</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
         <!-- Spring Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
